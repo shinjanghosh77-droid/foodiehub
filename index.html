@@ -2,6 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <!-- SEO META TAGS -->
+<meta name="description" content="FoodieHub lets you order delicious food online with fast delivery, amazing deals, and a smooth ordering experience inspired by KFC and Domino’s.">
+
+<meta name="keywords" content="online food order, food delivery, fast food, FoodieHub, order food online, burgers, chicken, pizza">
+
+<meta name="author" content="FoodieHub Team">
+
+<meta name="robots" content="index, follow">
+  <!-- OPEN GRAPH / SOCIAL MEDIA -->
+<meta property="og:title" content="FoodieHub – Order Food Online Fast">
+<meta property="og:description" content="Order fresh, delicious food with lightning-fast delivery. Enjoy exclusive deals only on FoodieHub.">
+<meta property="og:image" content="https://yourdomain.com/preview.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yourdomain.com">
+  <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FoodieHub – Fast Food Delivery">
+<meta name="twitter:description" content="Hungry? Order food online instantly with fast delivery and great offers on FoodieHub.">
+<meta name="twitter:image" content="https://yourdomain.com/preview.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <title>FoodieHub</title>
@@ -41,11 +59,11 @@ body{
   font-weight:800;
   color:#e4002b;
 }
-   
+    
 .logo span{
     color:#808080;
 }
-   
+    
 .nav-links{
   display:flex;
   gap:24px;
@@ -156,7 +174,7 @@ body{
   text-align:center;
   justify-content:center;
 }
- 
+  
 .menu{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -516,12 +534,12 @@ body.dark .track-step{
       </div>
     </div>
 <a href="#" onclick="openTrack()">Track Order</a>
-   
+    
     <button onclick="closeTrack()">Close</button>
   </div>
 </div>
 </div>
-   
+    
 
 <!-- HERO -->
 <section class="hero">
@@ -544,10 +562,43 @@ body.dark .track-step{
 <!-- MENU -->
 <section class="section">
   <h2>Browse Categories</h2>
-  <div class="menu"></div>
+  <div class="menu">
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec">
+          <div class="card-body">
+        <h3>Chicken Buckets</h3>
+        <button onclick="addToCart(1, 'Chicken Buckets')">Add to Cart</button>
+      </div>
+    </div>
+     
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1550547660-d9450f859349">
+      <div class="card-body">
+        <h3>Burgers</h3>
+        <button onclick="addToCart(2, 'Burgers')">Add to Cart</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1606756790138-261d2b21cd75">
+      <div class="card-body">
+        <h3>Main Course</h3>
+<button onclick="addToCart(3, 'Main Course')">Add to Cart</button>
+    </div>
+    </div>
+
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e">
+      <div class="card-body">
+        <h3>Beverages</h3>
+        <button onclick="addToCart(4, 'Beverages')">Add to Cart</button>
+      </div>
+    </div>
+  </div>
 </section>
 </section>
- 
+  
 <!-- WHY US -->
 <section class="why-us">
   <h2>Why Choose FoodieHub?</h2>
@@ -558,7 +609,7 @@ body.dark .track-step{
     <div class="why-card">⭐<h3>Top Rated</h3><p>Loved by customers</p></div>
   </div>
 </section>
-   
+    
 <footer class="site-footer">
   <div class="footer-container">
 
@@ -606,7 +657,7 @@ body.dark .track-step{
     © 2026 FoodieHub. All rights reserved.
   </div>
 </footer>
-   
+    
 <!-- LOGIN MODAL -->
 <div class="auth-modal" id="authModal">
   <div class="auth-box">
@@ -630,47 +681,75 @@ function toggleAuth(){
   document.getElementById("authTitle").innerText = isLogin?"Login":"Sign Up";
 }
 </script>
-<script>
-let cartCount = 0;
+  <script>
+let cart = JSON.parse(localStorage.getItem("cart")) || {};
 
-async function addToCart(id, name, price) {
-  try {
-    const response = await fetch("http://127.0.0.1:5000/order", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        user_id: 1,
-        items: [
-          {
-            product_id: id,
-            qty: 1
-          }
-        ]
-      })
-    });
+// Update cart count badge
+function updateCartCount() {
+  let count = 0;
+  for (let id in cart) {
+    count += cart[id].qty;
+  }
+  document.getElementById("cartCount").innerText = `(${count})`;
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
 
-    const data = await response.json();
+// Add item (NO BACKEND HERE)
+function addToCart(id, name) {
+  if (cart[id]) {
+    cart[id].qty++;
+  } else {
+    cart[id] = { name: name, qty: 1 };
+  }
+  updateCartCount();
+}
 
-    if (!response.ok) {
-      console.error(data);
-      alert(data.error || "Backend error");
-      return;
-    }
+// Increase quantity
+function increaseQty(id) {
+  cart[id].qty++;
+  updateCartCount();
+  renderCart();
+}
 
-    cartCount++;
-    document.getElementById("cartCount").innerText = `(${cartCount})`;
-    console.log("Order placed:", data);
+// Decrease quantity
+function decreaseQty(id) {
+  cart[id].qty--;
+  if (cart[id].qty <= 0) {
+    delete cart[id];
+  }
+  updateCartCount();
+  renderCart();
+}
 
-  } catch (err) {
-    console.error(err);
-    alert("Fetch failed");
+// Remove item
+function removeItem(id) {
+  delete cart[id];
+  updateCartCount();
+  renderCart();
+}
+
+// Render cart (optional UI)
+function renderCart() {
+  const box = document.getElementById("cartBox");
+  if (!box) return;
+
+  box.innerHTML = "<h3>Your Cart</h3>";
+  for (let id in cart) {
+    box.innerHTML += `
+      <div>
+        <b>${cart[id].name}</b>
+        <button onclick="decreaseQty(${id})">−</button>
+        ${cart[id].qty}
+        <button onclick="increaseQty(${id})">+</button>
+        <button onclick="removeItem(${id})">❌</button>
+      </div>
+    `;
   }
 }
 
+// Init on page load
+updateCartCount();
 </script>
-
 <script>
 function toggleDark(){
   document.body.classList.toggle("dark");
@@ -704,7 +783,7 @@ async function loginUser() {
   const password = document.getElementById("password").value;
 
   try {
-      const response = await fetch("http://localhost:5000/login", {
+    const response = await fetch("http://localhost:5000/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -730,7 +809,7 @@ async function loginUser() {
 </script>
   <script>
 async function loadMenu() {
-  const res = await fetch("http://localhost:5000/menu");
+  const res = await fetch("http://localhost:5000/api/menu");
   const items = await res.json();
 
   const menuDiv = document.querySelector(".menu");
@@ -742,7 +821,7 @@ async function loadMenu() {
         <img src="${item.image}">
         <div class="card-body">
           <h3>${item.name}</h3>
-         <button type="button"onclick="addToCart(${item.id}, '${item.name}', ${item.price})">Add to Cart</button>
+          <button onclick="addToCart()">Add to Cart</button>
         </div>
       </div>
     `;
@@ -750,31 +829,6 @@ async function loadMenu() {
 }
 
 loadMenu();
-</script>
-<script>
-const chatBtn = document.getElementById("chatBtn");
-const chatBox = document.getElementById("chatBox");
-const chatBody = document.getElementById("chatBody");
-const chatInput = document.getElementById("chatInput");
-
-chatBtn.onclick = () => {
-  chatBox.style.display = chatBox.style.display === "flex" ? "none" : "flex";
-};
-
-chatInput.addEventListener("keypress", e => {
-  if(e.key === "Enter"){
-    const msg = chatInput.value.toLowerCase();
-    chatBody.innerHTML += `<p><b>You:</b> ${msg}</p>`;
-
-    let reply = "Sorry, I didn’t understand.";
-    if(msg.includes("menu")) reply = "Check our menu above 🍔";
-    if(msg.includes("order")) reply = "You can add items to cart 🛒";
-    if(msg.includes("contact")) reply = "Call us at +91 98000 03815";
-
-    chatBody.innerHTML += `<p><b>Bot:</b> ${reply}</p>`;
-    chatInput.value = "";
-  }
-});
 </script>
 </body>
 </html>
