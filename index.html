@@ -635,7 +635,7 @@ let cartCount = 0;
 
 async function addToCart(id, name, price) {
   try {
-    const response = await fetch("https://foodiehub-backend-kd2o.onrender.com", {
+    const response = await fetch("https://foodiehub-backend-kd2o.onrender/order", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -704,7 +704,7 @@ async function loginUser() {
   const password = document.getElementById("password").value;
 
   try {
-      const response = await fetch("https://foodiehub-backend-kd2o.onrender.com", {
+      const response = await fetch("https://foodiehub-backend-kd2o.onrender/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -730,7 +730,7 @@ async function loginUser() {
 </script>
   <script>
 async function loadMenu() {
-  const res = await fetch("https://foodiehub-backend-kd2o.onrender.com");
+  const res = await fetch("https://foodiehub-backend-kd2o.onrender.com/menu");
   const items = await res.json();
 
   const menuDiv = document.querySelector(".menu");
@@ -778,4 +778,5 @@ chatInput.addEventListener("keypress", e => {
 </script>
 </body>
 </html>
+
 
