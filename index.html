@@ -730,7 +730,7 @@ async function loginUser() {
 </script>
   <script>
 async function loadMenu() {
-  const res = await fetch("http://localhost:5000/menu");
+  const res = await fetch("http://127.0.0.1:5000/menu");
   const items = await res.json();
 
   const menuDiv = document.querySelector(".menu");
