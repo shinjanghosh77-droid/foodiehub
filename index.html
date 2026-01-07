@@ -830,6 +830,34 @@ async function loadMenu() {
 
 loadMenu();
 </script>
+
+<script>
+const chatBtn = document.getElementById("chatBtn");
+const chatBox = document.getElementById("chatBox");
+const chatBody = document.getElementById("chatBody");
+const chatInput = document.getElementById("chatInput");
+
+chatBtn.onclick = () => {
+  chatBox.style.display = chatBox.style.display === "flex" ? "none" : "flex";
+};
+
+chatInput.addEventListener("keypress", e => {
+  if(e.key === "Enter"){
+    const msg = chatInput.value.toLowerCase();
+    chatBody.innerHTML += `<p><b>You:</b> ${msg}</p>`;
+
+    let reply = "Sorry, I didn’t understand.";
+    if(msg.includes("menu")) reply = "Check our menu above 🍔";
+    if(msg.includes("order")) reply = "You can add items to cart 🛒";
+    if(msg.includes("contact")) reply = "Call us at +91 98000 03815";
+
+    chatBody.innerHTML += `<p><b>Bot:</b> ${reply}</p>`;
+    chatInput.value = "";
+  }
+});
+</script>
+
 </body>
 </html>
+
 
