@@ -1,4 +1,3 @@
-from flask import Flask, request, jsonify, render_template
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -55,22 +54,22 @@ def get_menu():
 @app.route("/signup", methods=["POST"])
 def signup():
     data = request.json
-    hashed = generate_password_hash(data["password"])
-
     db.session.add(User(
         username=data["username"],
-        password=hashed
+        password=data["password"]
     ))
     db.session.commit()
     return jsonify({"message": "Signup successful"})
 
-
 @app.route("/login", methods=["POST"])
 def login():
     data = request.json
-    user = User.query.filter_by(username=data["username"]).first()
+    user = User.query.filter_by(
+        username=data["username"],
+        password=data["password"]
+    ).first()
 
-    if user and check_password_hash(user.password, data["password"]):
+    if user:
         return jsonify({"user_id": user.id})
 
     return jsonify({"error": "Invalid credentials"}), 401
@@ -95,11 +94,6 @@ def order():
 
     db.session.commit()
     return jsonify({"message": "Order placed", "order_id": new_order.id})
-    
-@app.route("/")
-def home():
-    return render_template("index.html")
-
 
 # ================= START =================
 
