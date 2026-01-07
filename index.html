@@ -642,11 +642,10 @@ async function addToCart(id, name, price) {
       },
       body: JSON.stringify({
         user_id: 1,
-        total: price,
         items: [
           {
-            name: name,
-            price: price
+            product_id: id,
+            qty: 1
           }
         ]
       })
@@ -656,7 +655,7 @@ async function addToCart(id, name, price) {
 
     if (!response.ok) {
       console.error(data);
-      alert("Backend error");
+      alert(data.error || "Backend error");
       return;
     }
 
@@ -666,9 +665,10 @@ async function addToCart(id, name, price) {
 
   } catch (err) {
     console.error(err);
-    alert("Fetch failed (check console)");
+    alert("Fetch failed");
   }
 }
+
 </script>
 
 <script>
